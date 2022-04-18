@@ -11,6 +11,10 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import os
+import dotenv
+import cx_Oracle
+cx_Oracle.init_oracle_client(lib_dir=r"C:\Program Files\instantclient_21_3")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +29,7 @@ SECRET_KEY = 'django-insecure-1by5q_fbcpzqnr&c^1!le^7#$h((j-1et6uzlt#n0&mw*3r3l@
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1']
 
 
 # Application definition
@@ -72,11 +76,20 @@ WSGI_APPLICATION = 'datacommerce.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+dotenv_file = os.path.join(BASE_DIR,'.env')
+if os.path.isfile(dotenv_file):
+    dotenv.load_dotenv(dotenv_file)
+DATABASE_NAME = os.environ['DATABASE_NAME']
+DATABASE_USER = os.environ['DATABASE_USER']
+DATABASE_PASSWORD = os.environ['DATABASE_PASSWORD']
+# Oracle Database ADB 연결
+DATABASES={
+    'default':
+    {
+    'ENGINE':'django.db.backends.oracle',
+    'NAME': DATABASE_NAME, # serviceanme e.g. databaseName_high or databaseName_low
+    'USER': DATABASE_USER,
+    'PASSWORD': DATABASE_PASSWORD,
     }
 }
 
