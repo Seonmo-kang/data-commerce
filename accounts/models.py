@@ -1,10 +1,11 @@
 from tabnanny import verbose
 from django.contrib.auth.base_user import BaseUserManager, AbstractBaseUser
 from django.contrib.auth.models import PermissionsMixin
+
 from django.core import validators
-
 from django.db import models
-
+from django.conf import settings
+user = settings.AUTH_USER_MODEL
 # from bases.models import TimeStampBase
 
 class UserManager(BaseUserManager):
@@ -62,3 +63,24 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return str(self.email)
+
+class ChangeInfoHistory(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey( user,related_name="user",on_delete=models.DO_NOTHING,db_column="user")
+    created_date = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        db_table = 'ChangeInfoHistory'
+
+    def __str__(self):
+        return str(self.user)
+
+class LoginHistory(models.Model):
+    id = models.BigAutoField(primary_key=True)
+    user = models.ForeignKey(user, related_name="user", on_delete=models.DO_NOTHING, db_column="user")
+    created_date = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        db_table = 'LoginHistory'
+
+    def __str__(self):
+        return str(self.user)

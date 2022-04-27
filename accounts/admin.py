@@ -2,6 +2,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 
+from datacommerce.accounts.models import ChangeInfoHistory, LoginHistory
+
 from .forms import UserCreationForm, UserChangeForm
 from django.contrib.auth import get_user_model
 #For using customized User model, we need a funtion : get_user_model
@@ -30,11 +32,18 @@ class UserAdmin(BaseUserAdmin):
         (None, {
             'classes': ('wide',),
             'fields': ('email', 'firstName', 'password1', 'password2')}
-         ),
+        ),
     )
     search_fields = ('email','firstName','lastName')
     ordering = ('-date_joined',)
     filter_horizontal = ()
 
+class ChangeInfoHistoryAdmin(admin.ModelAdmin):
+    readonly_fields = ['id','user','created_date']
 
+class LoginHistoryAdmin(admin.ModelAdmin):
+    readonly_fields = ['id','user','created_date']
+    
 admin.site.register(User, UserAdmin)
+admin.site.register(ChangeInfoHistory, ChangeInfoHistoryAdmin)
+admin.site.register(LoginHistory, UserAdmin)
